@@ -19,5 +19,5 @@ dependencies {
     testImplementation("io.kotest:kotest-property:4.3.1") // for kotest property test
 }
 tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "13"
+    kotlinOptions.jvmTarget = "11"
 }

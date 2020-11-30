@@ -82,6 +82,16 @@ class Chapter3Test : FreeSpec({
         }
     }
     "3.12" - {
+        "example that illustrates different types in the fold lambdas" {
+            val list = List.of(1, 2, 3, 4, 5)
+
+            foldRight(list, "") { i: Int, s: String -> s + i.toString() } shouldBe "54321"
+            foldRight2(list, "") { i: Int, s: String -> s + i.toString() } shouldBe "54321"
+
+            foldLeft(list, "") { s: String, i: Int -> s + i.toString() } shouldBe "12345"
+            foldLeft2(list, "") { s: String, i: Int -> s + i.toString() } shouldBe "12345"
+        }
+
         "can foldRight in terms of foldLeft" {
             // 1 - foldRight([2,3], 0)
             // 1 - (2 - foldRight([3], 0))

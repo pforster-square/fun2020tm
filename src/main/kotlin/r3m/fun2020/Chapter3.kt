@@ -69,6 +69,14 @@ fun <A, B> foldRight(xs: List<A>, z: B, f: (A, B) -> B): B = when (xs) {
     is Cons -> f(xs.head, foldRight(xs.tail, z, f))
 }
 
+/**
+ * foldRight([1,2,3], z, f)
+ * = f(1, foldRight([2,3], z, f))
+ * = f(1, f(2, foldRight([3], z, f)))
+ * = f(1, f(2, f(3, foldRight([], z, f))))
+ * = f(1, f(2, f(3, z) ) )
+ */
+
 val x = foldRight(
     List.of(1, 2, 3),
     List.empty<Int>(),
@@ -95,6 +103,12 @@ tailrec fun <A, B> foldLeft(xs: List<A>, z: B, f: (B, A) -> B): B = when (xs) {
     is Cons -> foldLeft(xs.tail, f(z, xs.head), f)
 }
 
+/**
+ * foldLeft([1,2,3], z,f)
+ * = foldLeft([2,3], aa=f(z, 1), f)
+ * = foldLeft([3], f(aa, 2), f)
+ */
+
 // 3.10
 fun sum(dbs: List<Double>): Double =
     foldLeft(dbs, 0.0) { b, a -> b + a }
@@ -119,6 +133,28 @@ fun <A, B> foldLeft2(xs: List<A>, z: B, f: (B, A) -> B): B =
 // 3.13
 fun <A> append(a1: List<A>, a2: List<A>): List<A> =
     foldRight2(a1, a2) { a, list -> Cons(a, list) }
+
+
+/**
+ * a1 [1,2,3]
+ * a2 [4,5,6]
+ *
+ * Cons(3, [4,5,6])
+ *
+ *
+ */
+
+
+
+
+
+
+
+
+
+
+
+
 
 // 3.14
 fun <A> concat(ax: List<List<A>>): List<A> = when (ax) {
@@ -223,6 +259,29 @@ fun <A, B> fold(ta: Tree<A>, l: (A) -> B, b: (B, B) -> B): B = when (ta) {
     is Branch -> b(fold(ta.left, l, b), fold(ta.right, l, b))
 }
 
+
+
+fun sizeA(t: Tree<*>): Int = when (t) {
+    is Leaf -> 1
+    is Branch -> sizeA(t.left) + sizeA(t.right) + 1
+}
+
+//fun sizeF1(t: Tree<*>): Int = when (t) {
+//    is Leaf -> 1
+//    is Branch -> { b1, b2 -> b1 + b2 + 1 } (sizeF1(t.left), sizeF1(t.right))
+//}
+
+/**
+ *
+ * a
+ * - a.left: b
+ * - a.right: c { 1, 1 -> 1 + 1 + 1 }
+ *   - 1
+ *   - 1
+ *
+ */
+
+
 // I think it makes more sense to keep the lambdas here in the parens.
 fun <A> sizeF(ta: Tree<A>): Int = fold(ta, { 1 }, { b1, b2 -> b1 + b2 + 1 })
 
@@ -230,4 +289,7 @@ fun maximumF(ta: Tree<Int>): Int = fold(ta, { it }, { b1, b2 -> maxOf(b1, b2) })
 
 fun <A> depthF(ta: Tree<A>): Int = fold(ta, { 1 }, { b1, b2 -> maxOf(b1, b2) })
 
-fun <A, B> mapF(ta: Tree<A>, f: (A) -> B): Tree<B> = fold<A, Tree<B>>(ta, { Leaf(f(it)) }, { b1, b2 -> Branch(b1, b2) })
+fun <A, B> mapF(ta: Tree<A>, f: (A) -> B): Tree<B>
+    = fold<A, Tree<B>>(ta, { Leaf(f(it)) }, { b1, b2 -> Branch(b1, b2) })
+
+
